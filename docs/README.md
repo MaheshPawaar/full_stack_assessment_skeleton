@@ -129,7 +129,16 @@ docker-compose -f docker-compose.initial.yml up --build -d
 
 ### solution
 
-> explain briefly your solution for this problem here
+To solve this problem, we need to normalize the data and restructure the database into a more organized and efficient form. The goal is to separate the user and home attributes into distinct tables, ensuring that the relationship between users and homes is properly represented using foreign keys.
+
+1. **User Table (`user`)**: Stores each user's unique username and email.
+
+2. **Home Table (`home`)**: Stores each home's unique street address along with other attributes.
+
+3. **Join Table (`user_home_new`)**: Stores the relationship between users and homes. Each record represents a user being interested in a particular home.
+
+4. **Data Migration**: The script includes SQL commands to transfer data from the original `user_home` table to the new normalized structure.
+
 
 ## 2. React SPA
 
