@@ -229,7 +229,70 @@ To solve this problem, we need to normalize the data and restructure the databas
 
 ### solution
 
-> explain briefly your solution for this problem here
+### **Tools and Libraries Used:**
+
+-   **React**: For building the user interface.
+-   **Redux Toolkit**: For state management.
+-   **RTK Query**: For efficient data fetching and caching.
+-   **React-Bootstrap**: For UI components and styling.
+
+* * * * *
+
+### **Architecture Overview:**
+
+1.  **State Management:**
+
+    -   **Redux Toolkit**: Manages global state, particularly the selected home and the associated users.
+    -   **RTK Query**: Handles data fetching for users and homes, providing hooks for querying and mutating data with automatic caching.
+2.  **Key Files and Their Roles:**
+
+    -   **`App.jsx`**: The main component responsible for orchestrating the fetching of users and homes, managing selected users, and rendering the modal.
+
+    -   **`EditUsersModal.jsx`**: The modal component where users can be selected or deselected for a specific home, and updates are saved.
+
+    -   **`Header.jsx`**: Displays the header and includes the `UserSelect` component.
+
+    -   **`HomeCard.jsx`**: Represents a single home in the list, allowing for editing users.
+
+    -   **`HomesList.jsx`**: Renders a list of homes, with each home represented by a `HomeCard`.
+
+    -   **`UserSelect.jsx`**: A dropdown component for selecting a user to filter homes.
+
+    -   **`store.js`**: Configures the Redux store, integrating RTK Query and Redux slices.
+
+    -   **`api.js`**: Defines RTK Query API endpoints for fetching users, homes, and updating users for a home.
+
+    -   **`homesSlice.js`**: Manages the state of homes within the Redux store.
+
+    -   **`selectedHomeSlice.js`**: Manages the state of the selected home and its associated users.
+
+* * * * *
+
+### **Implementation Details:**
+
+1.  **Fetching and Displaying Data:**
+
+    -   **Users and Homes:**
+        -   `useGetUsersQuery` is used to fetch the list of users.
+        -   `useGetHomesByUserQuery` is used to fetch homes associated with a selected user.
+        -   The data is stored in the Redux store and passed to components like `UserSelect` and `HomesList`.
+
+2.  **Updating Users for a Home:**
+
+    -   The `EditUsersModal` component allows users to be selected or deselected for a specific home.
+    -   **`handleUsersUpdate` Function:**
+        -   When "Save" is clicked, `useUpdateHomeUsersMutation` is used to update the list of users for the selected home.
+        -   The updated list of users is then manually combined with the existing users and dispatched to update the Redux state, ensuring the modal reflects these changes immediately without closing.
+
+3.  **Managing Modal State:**
+
+    -   The `EditUsersModal` component is controlled by the Redux state. It reflects the current users associated with the selected home.
+    -   The modal remains open after saving, showing the updated list of users immediately.
+    
+4.  **Redux Store Configuration:**
+
+    -   The store is configured in `store.js`, combining reducers from `homesSlice.js`, `selectedHomeSlice.js`, and the RTK Query API defined in `api.js`.
+    -   Middleware from RTK Query is added to the Redux store for enhanced data fetching capabilities.
 
 ## 3. Backend API development on Node
 
@@ -288,56 +351,110 @@ To solve this problem, we need to normalize the data and restructure the databas
 
     - we do NOT want raw SQL, if none of above works, you can use any ORM you know, but please mention and link to it in the README
 
-### solution
+## Solution
 
-> explain briefly your solution for this problem here
+Project Structure
+-----------------
 
-## Submission Guidelines
+-   `app.ts`: The entry point of the application where the Express server is initialized and routes are configured.
+-   `data-source.ts`: Configures the TypeORM data source.
+-   `routes/`: Contains route definitions for user and home-related operations.
+-   `controllers/`: Contains the business logic for handling requests related to users and homes.
+-   `entities/`: Contains TypeORM entity definitions for `User` and `UserHome`.
 
-- once you're done with [DB](#1-database), [frontend](#2-react-spa), [backend](#3-backend-api-development-on-node) it's time to submit your solution :smiley:
+Setup
+-----
 
-### README
+1.  Install dependencies:
 
-- this is the most important part of the submission, without a proper README no submission will be considered
+    bash
 
-- you must edit this README file in your fork of the repo, and for each problem section, document your solution properly in its **solution** section
+    Copy code
 
-### frontend & backend
+    `npm install`
 
-- all frontend / backend code should go entirely in the `./frontend` / `./backend` directories
-- we are fine with testing your solution in either `dev` or `production` mode, just make sure the instructions are properly documented
+2.  Configure the database connection in `data-source.ts` as per your environment.
 
-> [!CAUTION]
-> make sure to **commit the .env files** for both backend & frontend, if they are needed to run your solutions
+3.  Start the server:
 
-### database
+    bash
 
-> [!CAUTION]
-> The database changes you make while developing the solution, by default will not be visible to us or committed in the repo, so make sure to read and understand this section carefully!
+    Copy code
 
-- the database is inside a container, and all it's data (the tables you added, altered, etc..) are only saved inside a docker volume that's on your local system, invisible to us
+    `npm run start`
 
-- to make sure we can run your solution, you have to provide your **SQL script** to us
-- write all the DB changes to `99_final_db_dump.sql` in `sql` directory under root folder of repo
-- this script should take the DB from its initial state to the solved state
+    The server will run on `http://localhost:3000`.
 
-- you can test that easily by following below steps:
+API Endpoints
+-------------
 
-- first stop the already running db container, else there will be conflicts!
+### 1\. `/user/find-all` (GET)
 
-```bash
-docker-compose -f docker-compose.initial.yml down
-```
+**Description**: Retrieves all users from the database.
 
-- now fire up the new one
+**Controller Function**: `findAllUsers`
 
-```bash
- docker-compose -f docker-compose.final.yml up --build -d
-```
+**Response**:
 
-- this is the new db container with your SQL script applied, now test your app, it should work exactly the same with this new replica database, this is how we will be runnning your app
+-   `200 OK`: Returns a list of users.
+-   `500 Internal Server Error`: If an error occurs while fetching users.
 
-### submit the fork url
+### 2\. `/user/find-by-home/:street_address` (POST)
 
-- when you've committed everything needed to your github fork, please share the url with us, so we can review your submission
-  
+**Description**: Retrieves users associated with a specific `street_address`.
+
+**Controller Function**: `findUsersByHome`
+
+**Parameters**:
+
+-   `street_address` (string): The street address to find associated users.
+
+**Response**:
+
+-   `200 OK`: Returns a list of users associated with the given `street_address`.
+-   `400 Bad Request`: If `street_address` is missing or invalid.
+-   `500 Internal Server Error`: If an error occurs while fetching users.
+
+### 3\. `/home/find-by-user/:username` (GET)
+
+**Description**: Retrieves homes associated with a specific `username`.
+
+**Controller Function**: `findHomeByUser`
+
+**Parameters**:
+
+-   `username` (string): The username to find associated homes.
+
+**Response**:
+
+-   `200 OK`: Returns a list of homes associated with the given `username`.
+-   `500 Internal Server Error`: If an error occurs while fetching homes.
+
+### 4\. `/home/update-users/:street_address` (POST)
+
+**Description**: Updates the list of users associated with a specific `street_address`.
+
+**Controller Function**: `updateUsersForHome`
+
+**Parameters**:
+
+-   `street_address` (string): The street address to update associated users.
+
+**Request Body**:
+
+-   An array of `username` strings representing the users to associate with the given `street_address`.
+
+**Response**:
+
+-   `200 OK`: If the users are successfully updated.
+-   `500 Internal Server Error`: If an error occurs while updating users.
+
+Error Handling
+--------------
+
+All endpoints handle errors using a consistent format. If an error occurs, the server will respond with a status code of `500` and a JSON object containing an `error` field with a descriptive message.
+
+Initialization
+--------------
+
+The server initializes the database connection using TypeORM in the `startServer` function. If the connection is successful, the server starts listening on port 3000.

@@ -1,0 +1,8 @@
+.user-select {
+  display: flex;
+  align-items: center;
+}
+
+.user-select label {
+  margin-right: 10px;
+}

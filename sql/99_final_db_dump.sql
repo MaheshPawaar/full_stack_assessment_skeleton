@@ -36,7 +36,8 @@ CREATE TABLE
     `username` varchar(100) NOT NULL,
     `street_address` varchar(255) NOT NULL,
     FOREIGN KEY (`username`) REFERENCES `user` (`username`),
-    FOREIGN KEY (`street_address`) REFERENCES `home` (`street_address`)
+    FOREIGN KEY (`street_address`) REFERENCES `home` (`street_address`),
+    PRIMARY KEY (`username`, `street_address`)
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 -- Insert unique users into the `user` table

@@ -1,0 +1,13 @@
+.homes-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.no-homes {
+  color: #888;
+  font-size: 1.2em;
+  text-align: center;
+}
