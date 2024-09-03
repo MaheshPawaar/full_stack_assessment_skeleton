@@ -294,6 +294,25 @@ To solve this problem, we need to normalize the data and restructure the databas
     -   The store is configured in `store.js`, combining reducers from `homesSlice.js`, `selectedHomeSlice.js`, and the RTK Query API defined in `api.js`.
     -   Middleware from RTK Query is added to the Redux store for enhanced data fetching capabilities.
 
+Setup
+-----
+
+1.  Change Directory
+
+    `cd frontend`
+   
+2.  Install dependencies:
+
+    `npm install`
+
+3.  Start the server:
+
+    `npm run dev`
+
+ The server will run on `http://localhost:5173`.
+
+-----
+
 ## 3. Backend API development on Node
 
 ### problem
@@ -365,21 +384,21 @@ Project Structure
 Setup
 -----
 
-1.  Install dependencies:
+1.  Change Directory
 
-    bash
-
-    Copy code
+    `cd backend`
+   
+3.  Install dependencies:
 
     `npm install`
 
-2.  Configure the database connection in `data-source.ts` as per your environment.
+4.  Configure the database connection in `data-source.ts` as per your environment.
 
-3.  Start the server:
+5.  Build the project
 
-    bash
+    `npm run build`
 
-    Copy code
+6.  Start the server:
 
     `npm run start`
 
